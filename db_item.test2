@@ -1,0 +1,28 @@
+-- Apagar as tabelas caso existam.
+-- CUIDADO Isoo destroi todos os dados do banco.
+DROP TABLE IF EXISTS item;
+DROP TABLE IF EXISTS owner;
+
+-- Cria a tabela 'owner'.
+CREATE TABLE owner (
+    owner_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    owner_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    owner_name TEXT,
+    owner_email TEXT,
+    owner_password TEXT,
+    owner_birth DATE,
+    owner_status TEXT COMMENTS "Valores on, off",
+    owner_field1 TEXT,
+    ownerfield2 TEXT
+);
+
+-- Popular a tabela 'owner' com dados 'fake'.
+INSERT INTO owner 
+    (owner_name, owner_email, owner_password, owner_birth, owner_status, owner_field1, ownerfield2, owner_date)
+ VALUES
+	('Luferat', 'luferat@example.com', 'senha123', '1990-01-01', 'on', 'valor1', 'info1', strftime('%Y-%m-%d %H:%M:%S', 'now', '-10 days')),
+    ('Ana Souza', 'ana@example.com', 'senha456', '1985-05-20', 'off', 'valor2', 'info2', strftime('%Y-%m-%d %H:%M:%S', 'now', '-5 days')),
+    ('Pedro Lima', 'pedro@example.com', 'senha789', '1988-12-10', 'on', 'valor3', 'info3', strftime('%Y-%m-%d %H:%M:%S', 'now', '-2 days')),
+    ('João Silva', 'joao@example.com', 'senha321', '1987-08-15', 'on', 'valor4', 'info4', strftime('%Y-%m-%d %H:%M:%S', 'now', '-1 day')),
+    ('Maria Oliveira', 'maria@example.com', 'senha654', '1992-03-25', 'off', 'valor5', 'info5', strftime('%Y-%m-%d %H:%M:%S', 'now', '-3 hours')),
+    ('Carlos Santos', 'carlos@example.com', 'senha987', '1980-11-05', 'on', 'valor6', 'info6', strftime('%Y-%m-%d %H:%M:%S', 'now', '-1 hour'));
