@@ -49,6 +49,19 @@ def get_all_items():
     # Devolve os dados processados para quem solicitou.
     return res
 
+def get_one_item(id):
+
+    # Inicializa o banco de dados.
+    conn = sqlite3.connect(database)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    # Query de consulta.
+    sql = f"SELECT * FROM item WHERE item_status != 'off' AND item_id = {id}"
+
+    # Executa o código passando o valor do ID.
+    cursor.execute(sql, id)
+
 # Limpa o console.
 os.system('cls')
 print( # Exibe no console.
