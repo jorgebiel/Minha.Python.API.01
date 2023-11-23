@@ -281,13 +281,14 @@ def edit(id):
         # Confirma a atualização.
         return {"success": "Registro atualizado com sucesso", "id": id}, 201
 
+    # except json.JSONDecodeError as e:  # Erro ao obter dados do JSON.
+    #    return {"error": f"Erro ao decodificar JSON: {str(e)}"}, 500
+
     except sqlite3.Error as e:  # Erro ao processar banco de dados.
         return {"error": f"Erro ao acessar o banco de dados: {str(e)}"}, 500
 
     except Exception as e:  # Outros erros.
         return {"error": f"Erro inesperado: {str(e)}"}, 500
-
-    return {"olá": "mundo"}
 
 
 # Roda aplicativo Flask.
