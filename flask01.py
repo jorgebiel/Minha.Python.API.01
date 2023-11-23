@@ -294,3 +294,5 @@ def edit(id):
 # Roda aplicativo Flask.
 if __name__ == "__main__":
     app.run(debug=True)
+
+sql = "SELECT * FROM items WHERE owner_id != off" ((id,)) 
