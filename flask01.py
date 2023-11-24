@@ -296,3 +296,28 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 sql = "SELECT * FROM items WHERE owner_id != off" ((id,)) 
+
+import sqlite3
+
+# Conectar ao banco de dados
+conn = sqlite3.connect('seu_banco_de_dados.db')
+cursor = conn.cursor()
+
+# Substitua [ID_DO_USUÁRIO] pelo ID real do usuário
+user_id = 1
+
+# Executar a consulta SQL
+cursor.execute('SELECT * FROM items WHERE owner_id = ?', (user_id,))
+
+# Obter os resultados
+resultados = cursor.fetchall()
+
+# Processar os resultados
+for linha in resultados:
+    print(linha)
+    
+# Fechar a conexão com o banco de dados
+conn.close()
+
+sql = "SELECT * FROM items WHERE owner_id != %s"
+cursor.execute(sql, (id,))
