@@ -32,7 +32,7 @@ def prefix_remove(prefix, data):
 
 
 @app.route("/items", methods=["GET"])
-def get_all():
+def item_get_all():
 
     # Obtém todos os registros válidos de 'item'.
     # Request method → GET
@@ -87,7 +87,7 @@ def get_all():
 
 
 @app.route("/items/<int:id>", methods=["GET"])
-def get_one(id):
+def item_get_one(id):
 
     # Obtém um registro único de 'item', identificado pelo 'id'.
     # Request method → GET
@@ -283,6 +283,116 @@ def edit(id):
 
     # except json.JSONDecodeError as e:  # Erro ao obter dados do JSON.
     #    return {"error": f"Erro ao decodificar JSON: {str(e)}"}, 500
+
+    except sqlite3.Error as e:  # Erro ao processar banco de dados.
+        return {"error": f"Erro ao acessar o banco de dados: {str(e)}"}, 500
+
+    except Exception as e:  # Outros erros.
+        return {"error": f"Erro inesperado: {str(e)}"}, 500
+
+################################################
+# crud owners
+################################################
+
+@app.route("/owners", methods=["GET"])
+def owner_get_all():
+
+    # Obtém todos os registros válidos de 'owner'.
+    # Request method → GET
+    # Request endpoint → /owners
+    # Response → JSON
+
+    try:
+
+        # Conecta ao banco de dados.
+        conn = sqlite3.connect(database)
+
+        # Formata os dados retornados na factory como SQLite.Row.
+        conn.row_factory = sqlite3.Row
+
+        # Cria um cursor de dados.
+        cursor = conn.cursor()
+
+        # Executa o SQL.
+        cursor.execute(
+            "SELECT * FROM owner WHERE owner_status != 'off' ORDER BY owner_name")
+
+        # Retorna todos os resultados da consulta para 'items_rows'.
+        items_rows = cursor.fetchall()
+
+        # Fecha a conexão com o banco de dados
+        conn.close()
+
+        # Cria uma lista para armazenar os registros.
+        items = []
+
+        # Converte cada SQLite.Row em um dicionário e adiciona à lista 'registros'.
+        for item in items_rows:
+            items.append(dict(item))
+
+        # Verifica se há registros antes de retornar...
+        if items:
+
+            # Remove prefixos dos campos.
+            new_items = [prefix_remove('owner_', item) for item in items]
+
+            # Se houver registros, retorna tudo.
+            return new_items, 200
+        else:
+            # Se não houver registros, retorna erro.
+            return {"error": "Nenhum item encontrado"}, 404
+
+    except sqlite3.Error as e:  # Erro ao processar banco de dados.
+        return {"error": f"Erro ao acessar o banco de dados: {str(e)}"}, 500
+
+    except Exception as e:  # Outros erros.
+        return {"error": f"Erro inesperado: {str(e)}"}, 500
+
+@app.route("/owners/<int:id>", methods=["GET"])
+def owner_get_one(id):
+
+    # Obtém um registro único de 'owner', identificado pelo 'id'.
+    # Request method → GET
+    # Request endpoint → /owners/<id>
+    # Response → JSON
+
+    try:
+        # Conecta ao banco de dados.
+        conn = sqlite3.connect(database)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        sql = """
+            SELECT * FROM item 
+                INNER JOIN owner ON item_owner = owner_id
+            WHERE item_status != 'off'
+                AND item_id = ?
+            ORDER BY item_date DESC
+        """
+        # Executa o SQL.
+        cursor.execute(
+            "SELECT * FROM owner WHERE owner_id = ? AND owner_status != 'off'", (id,))
+
+        # Retorna o resultado da consulta para 'item_row'.
+        item_row = cursor.fetchone()
+
+        # Fecha a conexão com o banco de dados.
+        conn.close()
+
+        # Se o registro existe...
+        if item_row:
+
+            # Converte SQLite.Row para dicionário e armazena em 'item'.
+            item = dict(item_row)
+
+            # Remove prefixos dos campos.
+            new_item = prefix_remove('owner_', item)
+
+            # Retorna item.
+            return new_item, 200
+        else:
+            # Se não encontrar o registro, retorna erro.
+            return {"error": "Item não encontrado"}, 404
 
     except sqlite3.Error as e:  # Erro ao processar banco de dados.
         return {"error": f"Erro ao acessar o banco de dados: {str(e)}"}, 500
